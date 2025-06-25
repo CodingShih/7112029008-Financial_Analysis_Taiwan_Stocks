@@ -1,0 +1,3 @@
+# Ignore Gradle build files
+**/build/
+**/.gradle/
