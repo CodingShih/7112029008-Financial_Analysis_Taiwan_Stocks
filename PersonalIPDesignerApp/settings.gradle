@@ -1,0 +1,2 @@
+rootProject.name = "PersonalIPDesigner"
+include(":app")
