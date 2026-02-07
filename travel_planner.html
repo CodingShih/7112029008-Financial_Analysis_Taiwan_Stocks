@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>過年家庭旅遊・單頁式旅遊 Web App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    :root {
+      --ink: #1f1f1f;
+      --paper: #f7f5f2;
+      --mist: #ece9e5;
+      --taupe: #c9bfb6;
+      --accent: #5f5a55;
+    }
+    body {
+      font-family: "Noto Sans TC", "Inter", sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(60, 55, 50, 0.08);
+    }
+    .badge {
+      background: var(--mist);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tag {
+      background: #1f1f1f;
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
+    }
+    .tab-active {
+      background: #1f1f1f;
+      color: #fff;
+    }
+    .shadow-soft {
+      box-shadow: 0 12px 24px rgba(50, 45, 40, 0.08);
+    }
+    .input {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #e5e0db;
+      padding: 10px 12px;
+      background: #fff;
+    }
+    .btn {
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #1f1f1f;
+      color: #fff;
+    }
+    .btn-outline {
+      border: 1px solid #1f1f1f;
+      color: #1f1f1f;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+    }
+    .timeline:before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: #e3ded9;
+    }
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #1f1f1f;
+      position: absolute;
+      left: 0;
+      top: 8px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+    }
+    .nav-item i {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24">
+  <header class="px-5 pt-6 pb-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-500">過年家庭旅遊</p>
+        <h1 class="text-2xl font-bold">旅遊小助手</h1>
+      </div>
+      <div class="text-right">
+        <span class="badge"><i class="fa-solid fa-car"></i> 自駕模式</span>
+        <p class="text-xs text-gray-400 mt-2">Mobile-first MUJI-like</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="px-5 space-y-6">
+    <section class="card p-5">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="tag">行程核心</span>
+        <span class="badge">爸媽體力優先</span>
+        <span class="badge">車程合理</span>
+        <span class="badge">免排隊景點</span>
+      </div>
+      <p class="mt-3 text-sm text-gray-600">
+        過年行程以慢旅為主，行李輕便、移動順暢，確保長輩行走舒適。
+      </p>
+    </section>
+
+    <section id="tab-plan" class="tab-section space-y-5">
+      <div class="flex items-center justify-between">
+        <h2 class="section-title">PLAN 行程表</h2>
+        <div class="flex gap-2">
+          <button id="reset-plan" class="btn btn-outline text-xs">重置完成狀態</button>
+        </div>
+      </div>
+
+      <div class="card p-5 space-y-4">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <p class="text-sm text-gray-500">Day1 下午二選一</p>
+            <p class="font-semibold">請選擇要去的高雄景點</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-outline text-sm" data-choice="A">駁二藝術特區</button>
+            <button class="btn btn-outline text-sm" data-choice="B">西子灣</button>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400">可於行程中切換，已選擇會顯示在 Day1 行程。</p>
+      </div>
+
+      <div id="plan-container" class="space-y-5"></div>
+
+      <div class="card p-5 space-y-4">
+        <h3 class="font-semibold text-lg">PLAN+ 新增行程</h3>
+        <form id="custom-plan-form" class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <select class="input" id="custom-day" required>
+              <option value="Day1">Day1 初二</option>
+              <option value="Day2">Day2 初三</option>
+              <option value="Day3">Day3 初四</option>
+              <option value="Day4">Day4 初五</option>
+            </select>
+            <input class="input" id="custom-time" placeholder="時段 (上午/午後/自訂)" required />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <select class="input" id="custom-type">
+              <option value="景點">景點</option>
+              <option value="餐廳">餐廳</option>
+              <option value="休息站">休息站</option>
+              <option value="購物">購物</option>
+              <option value="加油">加油</option>
+              <option value="其他">其他</option>
+            </select>
+            <input class="input" id="custom-drive" placeholder="車程 (分鐘，可選)" type="number" min="0" />
+          </div>
+          <input class="input" id="custom-name" placeholder="名稱" required />
+          <input class="input" id="custom-note" placeholder="備註" />
+          <input class="input" id="custom-map" placeholder="地圖關鍵字 (選填)" />
+          <button class="btn btn-primary w-full" type="submit">新增行程</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="tab-guide" class="tab-section hidden space-y-5">
+      <h2 class="section-title">GUIDE 深度導覽</h2>
+      <div class="grid gap-5">
+        <div class="card p-5 space-y-3">
+          <h3 class="font-semibold text-lg">駁二藝術特區</h3>
+          <p class="text-sm text-gray-600">高雄港邊倉庫改造的藝文聚落，散步、拍照、看展都輕鬆。</p>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <p><strong>亮點：</strong>倉庫藝術、駁二塔、裝置藝術</p>
+            <p><strong>適合族群：</strong>親子、情侶、長輩慢走</p>
+            <p><strong>拍照點：</strong>大港橋、碼頭區、彩繪牆</p>
+            <p><strong>停留建議：</strong>1.5-2 小時</p>
+            <p class="col-span-2"><strong>注意事項：</strong>午後較熱，記得防曬補水。</p>
+          </div>
+        </div>
+
+        <div class="card p-5 space-y-3">
+          <h3 class="font-semibold text-lg">西子灣</h3>
+          <p class="text-sm text-gray-600">靠山臨海，海景夕陽是招牌，行程節奏可放慢。</p>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <p><strong>亮點：</strong>夕陽海景、舊英領事館周邊</p>
+            <p><strong>適合族群：</strong>喜歡看海、拍照的家人</p>
+            <p><strong>拍照點：</strong>海景觀景台、斜坡步道</p>
+            <p><strong>停留建議：</strong>1-1.5 小時</p>
+            <p class="col-span-2"><strong>注意事項：</strong>傍晚風大，建議帶薄外套。</p>
+          </div>
+        </div>
+
+        <div class="card p-5 space-y-3">
+          <h3 class="font-semibold text-lg">國立海洋生物博物館</h3>
+          <p class="text-sm text-gray-600">室內參觀舒適、路程短，適合安排上午或雨天。</p>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <p><strong>亮點：</strong>企鵝餵食、深海隧道</p>
+            <p><strong>適合族群：</strong>親子、長輩</p>
+            <p><strong>拍照點：</strong>藍色海底隧道</p>
+            <p><strong>停留建議：</strong>2-3 小時</p>
+            <p class="col-span-2"><strong>注意事項：</strong>假日人多，建議早點到。</p>
+          </div>
+          <iframe class="w-full rounded-xl" height="200" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=120.741%2C21.888%2C120.769%2C21.904&layer=mapnik&marker=21.896%2C120.755"></iframe>
+        </div>
+
+        <div class="card p-5 space-y-3">
+          <h3 class="font-semibold text-lg">奇美博物館</h3>
+          <p class="text-sm text-gray-600">台南必訪建築與藝術典藏，開門時間 09:30。</p>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <p><strong>亮點：</strong>西洋畫展廳、歐式花園</p>
+            <p><strong>適合族群：</strong>喜歡藝文、拍照</p>
+            <p><strong>拍照點：</strong>博物館外觀、湖畔倒影</p>
+            <p><strong>停留建議：</strong>2 小時</p>
+            <p class="col-span-2"><strong>注意事項：</strong>館內步行多，穿好走的鞋。</p>
+          </div>
+          <iframe class="w-full rounded-xl" height="200" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=120.220%2C22.930%2C120.245%2C22.943&layer=mapnik&marker=22.936%2C120.232"></iframe>
+        </div>
+
+        <div class="card p-5 space-y-3">
+          <h3 class="font-semibold text-lg">十鼓文化園區</h3>
+          <p class="text-sm text-gray-600">糖廠改造的大型園區，有表演、設施與拍照場景。</p>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <p><strong>亮點：</strong>十鼓表演、工業風建築</p>
+            <p><strong>適合族群：</strong>喜歡拍照、喜歡活動</p>
+            <p><strong>拍照點：</strong>煙囪、工業風樓梯</p>
+            <p><strong>停留建議：</strong>2-3 小時</p>
+            <p class="col-span-2"><strong>注意事項：</strong>夜景推薦，留點體力。</p>
+          </div>
+        </div>
+
+        <div class="card p-5 space-y-3">
+          <h3 class="font-semibold text-lg">蓋婭莊園</h3>
+          <p class="text-sm text-gray-600">歐式花園景觀，多數區域好拍照，適合慢慢走。</p>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <p><strong>亮點：</strong>園區景觀、歐風建築</p>
+            <p><strong>適合族群：</strong>長輩、拍照控</p>
+            <p><strong>拍照點：</strong>花園步道、主建築門口</p>
+            <p><strong>停留建議：</strong>2-3 小時</p>
+            <p class="col-span-2"><strong>注意事項：</strong>防曬必備，中午稍熱。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-wallet" class="tab-section hidden space-y-5">
+      <h2 class="section-title">WALLET 記帳與換算</h2>
+      <div class="card p-5 space-y-4">
+        <h3 class="font-semibold">分帳計算機</h3>
+        <input id="calc-input" class="input" placeholder="輸入算式，例如 500+200*3" />
+        <div class="flex items-center gap-3">
+          <button id="calc-btn" class="btn btn-primary">= 計算</button>
+          <p id="calc-result" class="text-lg font-semibold text-gray-700">TWD 0</p>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-sm">
+          <select id="currency-main" class="input">
+            <option value="TWD" selected>TWD</option>
+            <option value="JPY">JPY</option>
+            <option value="USD">USD</option>
+          </select>
+          <input id="currency-rate" type="number" class="input" placeholder="匯率 (自訂)" />
+          <button id="currency-convert" class="btn btn-outline">換算</button>
+        </div>
+        <p id="currency-output" class="text-sm text-gray-600"></p>
+      </div>
+
+      <div class="card p-5 space-y-4">
+        <h3 class="font-semibold">記帳新增</h3>
+        <form id="expense-form" class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <input id="expense-name" class="input" placeholder="品項" required />
+            <input id="expense-amount" type="number" class="input" placeholder="金額 (TWD)" required />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <select id="expense-category" class="input">
+              <option value="餐飲">餐飲</option>
+              <option value="門票">門票</option>
+              <option value="油錢">油錢</option>
+              <option value="停車">停車</option>
+              <option value="伴手禮">伴手禮</option>
+              <option value="其他">其他</option>
+            </select>
+            <input id="expense-photo" type="file" accept="image/*" class="input" />
+          </div>
+          <button class="btn btn-primary w-full" type="submit">新增記帳</button>
+        </form>
+        <div class="space-y-2" id="expense-summary"></div>
+        <div id="expense-list" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <section id="tab-lists" class="tab-section hidden space-y-5">
+      <h2 class="section-title">LISTS 清單</h2>
+      <div class="card p-5 space-y-4">
+        <h3 class="font-semibold">行前準備 CheckList</h3>
+        <div id="checklist" class="space-y-2"></div>
+        <div class="flex gap-2">
+          <input id="checklist-input" class="input" placeholder="新增項目" />
+          <button id="checklist-add" class="btn btn-primary">新增</button>
+        </div>
+      </div>
+
+      <div class="card p-5 space-y-4">
+        <h3 class="font-semibold">個人備忘錄</h3>
+        <div class="flex gap-2">
+          <input id="memo-input" class="input" placeholder="輸入備忘 (網址會自動變連結)" />
+          <button id="memo-add" class="btn btn-primary">新增</button>
+        </div>
+        <div id="memo-list" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <section id="tab-food" class="tab-section hidden space-y-5">
+      <h2 class="section-title">FOOD 美食清單</h2>
+      <div class="card p-5 space-y-4">
+        <h3 class="font-semibold">新增美食項目</h3>
+        <form id="food-form" class="space-y-3">
+          <input id="food-name" class="input" placeholder="名稱 (必填)" required />
+          <div class="grid grid-cols-2 gap-3">
+            <input id="food-city" class="input" placeholder="城市/區域" />
+            <select id="food-type" class="input">
+              <option value="早餐">早餐</option>
+              <option value="午餐">午餐</option>
+              <option value="晚餐">晚餐</option>
+              <option value="小吃">小吃</option>
+              <option value="甜點">甜點</option>
+              <option value="咖啡">咖啡</option>
+              <option value="伴手禮">伴手禮</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <input id="food-price" class="input" placeholder="價位 ($/$$/$$$)" />
+            <input id="food-map" class="input" placeholder="Google Maps 關鍵字" />
+          </div>
+          <input id="food-note" class="input" placeholder="備註 (必吃品項/排隊提醒)" />
+          <button class="btn btn-primary w-full" type="submit">加入清單</button>
+        </form>
+      </div>
+
+      <div class="card p-5 space-y-4">
+        <div class="grid grid-cols-3 gap-2">
+          <select id="food-filter-city" class="input">
+            <option value="all">全部城市</option>
+            <option value="高雄">高雄</option>
+            <option value="墾丁">墾丁</option>
+            <option value="台南">台南</option>
+            <option value="嘉義">嘉義</option>
+          </select>
+          <select id="food-filter-type" class="input">
+            <option value="all">全部類型</option>
+            <option value="早餐">早餐</option>
+            <option value="午餐">午餐</option>
+            <option value="晚餐">晚餐</option>
+            <option value="小吃">小吃</option>
+            <option value="甜點">甜點</option>
+            <option value="咖啡">咖啡</option>
+            <option value="伴手禮">伴手禮</option>
+          </select>
+          <select id="food-filter-status" class="input">
+            <option value="all">全部狀態</option>
+            <option value="pending">未吃</option>
+            <option value="done">已吃</option>
+          </select>
+        </div>
+        <select id="food-sort" class="input">
+          <option value="time">依新增時間</option>
+          <option value="price">依價位</option>
+          <option value="city">依城市</option>
+        </select>
+        <div id="food-list" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <section id="tab-info" class="tab-section hidden space-y-5">
+      <h2 class="section-title">INFO 資訊</h2>
+      <div class="card p-5 space-y-3">
+        <h3 class="font-semibold">天氣查詢</h3>
+        <div class="flex gap-2 flex-wrap">
+          <a class="btn btn-outline" href="https://www.cwa.gov.tw/" target="_blank">中央氣象署</a>
+          <a class="btn btn-outline" href="https://www.windy.com/" target="_blank">Windy</a>
+        </div>
+      </div>
+      <div class="card p-5 space-y-3">
+        <h3 class="font-semibold">緊急聯絡</h3>
+        <p>警察：110｜救護/消防：119</p>
+        <input class="input" placeholder="道路救援建議（可填入保險電話）" />
+      </div>
+      <div class="card p-5 space-y-3">
+        <h3 class="font-semibold">自駕提醒</h3>
+        <ul class="text-sm list-disc pl-5 text-gray-600">
+          <li>注意測速照相與超速提醒，避免罰單。</li>
+          <li>停車繳費可用電子支付，記得補繳。</li>
+          <li>連假車潮多，建議每 1.5 小時休息。</li>
+        </ul>
+      </div>
+      <div class="card p-5 space-y-3">
+        <h3 class="font-semibold">旅遊注意事項</h3>
+        <ul class="text-sm list-disc pl-5 text-gray-600">
+          <li>海邊防曬補水，長輩走路速度放慢。</li>
+          <li>塞車時可改在休息站或超商停靠。</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-5 py-3">
+    <div class="flex justify-between">
+      <button class="nav-item tab-active" data-tab="plan"><i class="fa-solid fa-route"></i><span>PLAN</span></button>
+      <button class="nav-item" data-tab="guide"><i class="fa-solid fa-book-open"></i><span>GUIDE</span></button>
+      <button class="nav-item" data-tab="wallet"><i class="fa-solid fa-wallet"></i><span>WALLET</span></button>
+      <button class="nav-item" data-tab="lists"><i class="fa-solid fa-list-check"></i><span>LISTS</span></button>
+      <button class="nav-item" data-tab="food"><i class="fa-solid fa-bowl-food"></i><span>FOOD</span></button>
+      <button class="nav-item" data-tab="info"><i class="fa-solid fa-circle-info"></i><span>INFO</span></button>
+    </div>
+  </nav>
+
+  <script>
+    const storage = {
+      get(key, fallback) {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      },
+      set(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
+    };
+
+    const planData = {
+      Day1: {
+        label: "初二",
+        theme: "高雄 → 墾丁",
+        items: [
+          {
+            id: "d1-am",
+            time: "上午",
+            title: "回外公家吃飯",
+            desc: "該幾點到就幾點到，不安排其他行程",
+            drive: "",
+            tags: ["彈性行程"],
+            map: "外公家",
+            default: true
+          },
+          {
+            id: "d1-a",
+            time: "下午",
+            title: "駁二藝術特區",
+            desc: "高雄藝術特區，適合散步拍照",
+            drive: "33",
+            tags: ["二選一"],
+            map: "駁二藝術特區",
+            default: true,
+            choice: "A"
+          },
+          {
+            id: "d1-b",
+            time: "下午",
+            title: "西子灣",
+            desc: "海景夕陽點，慢慢走",
+            drive: "39",
+            tags: ["二選一"],
+            map: "西子灣",
+            default: true,
+            choice: "B"
+          },
+          {
+            id: "d1-evening",
+            time: "傍晚",
+            title: "前往墾丁",
+            desc: "吃點東西後出發",
+            drive: "116",
+            tags: ["車程"],
+            map: "墾丁",
+            default: true
+          },
+          {
+            id: "d1-night",
+            time: "晚上",
+            title: "墾丁住宿",
+            desc: "離墾丁大街很近，可視時間晃晃",
+            drive: "",
+            tags: ["可選行程"],
+            map: "墾丁大街",
+            default: true
+          }
+        ]
+      },
+      Day2: {
+        label: "初三",
+        theme: "墾丁 → 台南",
+        items: [
+          {
+            id: "d2-am",
+            time: "上午",
+            title: "國立海洋生物博物館",
+            desc: "路程短，不太會塞車",
+            drive: "20",
+            tags: ["必訪"],
+            map: "國立海洋生物博物館",
+            default: true
+          },
+          {
+            id: "d2-noon",
+            time: "中午",
+            title: "用餐",
+            desc: "附近簡單吃",
+            drive: "",
+            tags: ["補給"],
+            map: "墾丁餐廳",
+            default: true
+          },
+          {
+            id: "d2-pm",
+            time: "下午",
+            title: "墾丁路邊景區/平台",
+            desc: "不用門票、時間自由",
+            drive: "",
+            tags: ["彈性行程"],
+            map: "墾丁 景觀平台",
+            default: true
+          },
+          {
+            id: "d2-evening",
+            time: "傍晚/晚上",
+            title: "開車回台南",
+            desc: "看爸爸體力決定出發時間",
+            drive: "120",
+            tags: ["車程"],
+            map: "台南",
+            default: true
+          },
+          {
+            id: "d2-night",
+            time: "晚上",
+            title: "台南家裡",
+            desc: "最舒適、行李減量",
+            drive: "",
+            tags: ["住宿"],
+            map: "台南家裡",
+            default: true
+          }
+        ]
+      },
+      Day3: {
+        label: "初四",
+        theme: "台南一日",
+        items: [
+          {
+            id: "d3-am",
+            time: "上午",
+            title: "奇美博物館",
+            desc: "09:30 開門",
+            drive: "22",
+            tags: ["09:30 開門"],
+            map: "奇美博物館",
+            default: true
+          },
+          {
+            id: "d3-noon",
+            time: "中午",
+            title: "奇美外草皮野餐/餐車",
+            desc: "草皮漂亮，可自帶食物",
+            drive: "",
+            tags: ["野餐"],
+            map: "奇美博物館 草皮",
+            default: true
+          },
+          {
+            id: "d3-pm",
+            time: "下午",
+            title: "十鼓文化園區",
+            desc: "糖廠元素、拍照景點、表演",
+            drive: "4",
+            tags: ["夜景推薦"],
+            map: "十鼓文化園區",
+            default: true
+          },
+          {
+            id: "d3-night",
+            time: "晚上",
+            title: "吃完飯回家",
+            desc: "類比家裡到台南高鐵站",
+            drive: "30",
+            tags: ["返程"],
+            map: "台南高鐵站",
+            default: true
+          }
+        ]
+      },
+      Day4: {
+        label: "初五",
+        theme: "嘉義一日",
+        items: [
+          {
+            id: "d4-am",
+            time: "上午",
+            title: "嘉義 蓋婭莊園",
+            desc: "08:30 開園 / 17:30 閉園",
+            drive: "56",
+            tags: ["園區內可用餐"],
+            map: "嘉義 蓋婭莊園",
+            default: true
+          },
+          {
+            id: "d4-noon",
+            time: "中午",
+            title: "園區內用餐",
+            desc: "慢慢用餐休息",
+            drive: "",
+            tags: ["園區內可用餐"],
+            map: "蓋婭莊園 餐廳",
+            default: true
+          },
+          {
+            id: "d4-pm",
+            time: "下午",
+            title: "慢慢逛、再慢慢回台南",
+            desc: "途中可加點行程",
+            drive: "",
+            tags: ["彈性行程"],
+            map: "台南",
+            default: true
+          }
+        ]
+      }
+    };
+
+    const checklistDefaults = [
+      "駕照、行照、ETC/停車費、現金/信用卡",
+      "行動電源、充電線、車充",
+      "防曬、帽子、墨鏡、薄外套",
+      "雨具（折疊傘/輕便雨衣）",
+      "常備藥（暈車藥、止痛、腸胃藥、OK繃）",
+      "水、零食",
+      "相機/手機、存儲空間清理",
+      "住宿訂房資訊截圖",
+      "垃圾袋/濕紙巾"
+    ];
+
+    const state = {
+      completed: storage.get("planCompleted", {}),
+      customPlans: storage.get("customPlans", []),
+      planChoice: storage.get("planChoice", "A"),
+      checklist: storage.get("checklist", checklistDefaults.map(text => ({ text, done: false }))),
+      memos: storage.get("memos", []),
+      expenses: storage.get("expenses", []),
+      food: storage.get("food", [])
+    };
+
+    const planContainer = document.getElementById("plan-container");
+
+    function createMapLink(query) {
+      const base = "https://www.google.com/maps/search/?api=1&query=";
+      return `${base}${encodeURIComponent(query)}`;
+    }
+
+    function renderPlan() {
+      planContainer.innerHTML = "";
+      Object.entries(planData).forEach(([dayKey, day]) => {
+        const section = document.createElement("div");
+        section.className = "card p-5 space-y-4";
+        section.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500">${dayKey} ${day.label}</p>
+              <h3 class="text-lg font-semibold">${day.theme}</h3>
+            </div>
+            <button class="btn btn-outline text-xs" data-add-day="${dayKey}">新增行程</button>
+          </div>
+          <div class="timeline space-y-4" data-day="${dayKey}"></div>
+        `;
+        const timeline = section.querySelector(".timeline");
+        const baseItems = day.items.filter(item => !item.choice || item.choice === state.planChoice);
+        const customItems = state.customPlans
+          .filter(item => item.day === dayKey)
+          .sort((a, b) => a.order - b.order);
+        const allItems = [...baseItems, ...customItems];
+        allItems.forEach((item, index) => {
+          const isCustom = !item.default;
+          const itemWrap = document.createElement("div");
+          itemWrap.className = "relative pl-6";
+          const completed = !!state.completed[item.id];
+          const tags = item.tags?.map(tag => `<span class="tag">${tag}</span>`).join("") || "";
+          const badge = item.drive ? `<span class="badge">🚗 ${item.drive} 分鐘</span>` : "";
+          const mapLink = createMapLink(item.map || item.title);
+          const customBadge = isCustom ? `<span class="badge">CUSTOM</span>` : `<span class="badge">DEFAULT</span>`;
+          const reorderControls = isCustom ? `
+            <div class="flex gap-2">
+              <button class="btn btn-outline text-xs" data-move="up" data-id="${item.id}">上移</button>
+              <button class="btn btn-outline text-xs" data-move="down" data-id="${item.id}">下移</button>
+            </div>
+          ` : "";
+          const editControls = isCustom ? `
+            <div class="flex gap-2">
+              <button class="btn btn-outline text-xs" data-edit="${item.id}">編輯</button>
+              <button class="btn btn-outline text-xs" data-delete="${item.id}">刪除</button>
+            </div>
+          ` : "";
+          itemWrap.innerHTML = `
+            <span class="timeline-dot"></span>
+            <div class="card p-4 space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <p class="text-xs text-gray-500">${item.time}</p>
+                  <h4 class="font-semibold">${item.title}</h4>
+                </div>
+                <label class="flex items-center gap-2 text-xs">
+                  <input type="checkbox" ${completed ? "checked" : ""} data-complete="${item.id}" />
+                  已完成
+                </label>
+              </div>
+              <p class="text-sm text-gray-600">${item.desc}</p>
+              <div class="flex flex-wrap gap-2 items-center">
+                ${badge}
+                ${customBadge}
+                ${tags}
+              </div>
+              <div class="flex flex-wrap gap-2 items-center">
+                <a class="btn btn-outline text-xs" href="${mapLink}" target="_blank">開啟 Google Maps</a>
+                ${editControls}
+                ${reorderControls}
+              </div>
+            </div>
+          `;
+          timeline.appendChild(itemWrap);
+        });
+        planContainer.appendChild(section);
+      });
+    }
+
+    function saveState() {
+      storage.set("planCompleted", state.completed);
+      storage.set("customPlans", state.customPlans);
+      storage.set("planChoice", state.planChoice);
+      storage.set("checklist", state.checklist);
+      storage.set("memos", state.memos);
+      storage.set("expenses", state.expenses);
+      storage.set("food", state.food);
+    }
+
+    document.querySelectorAll("[data-choice]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.planChoice = btn.dataset.choice;
+        saveState();
+        renderPlan();
+        document.querySelectorAll("[data-choice]").forEach(b => b.classList.remove("btn-primary"));
+        btn.classList.add("btn-primary");
+      });
+    });
+
+    document.getElementById("reset-plan").addEventListener("click", () => {
+      state.completed = {};
+      saveState();
+      renderPlan();
+    });
+
+    document.getElementById("plan-container").addEventListener("change", event => {
+      if (event.target.matches("[data-complete]")) {
+        state.completed[event.target.dataset.complete] = event.target.checked;
+        saveState();
+      }
+    });
+
+    document.getElementById("plan-container").addEventListener("click", event => {
+      const addBtn = event.target.closest("[data-add-day]");
+      if (addBtn) {
+        document.getElementById("custom-day").value = addBtn.dataset.addDay;
+        document.getElementById("custom-name").focus();
+      }
+      const moveBtn = event.target.closest("[data-move]");
+      if (moveBtn) {
+        const id = moveBtn.dataset.id;
+        const itemIndex = state.customPlans.findIndex(item => item.id === id);
+        if (itemIndex > -1) {
+          const direction = moveBtn.dataset.move;
+          const current = state.customPlans[itemIndex];
+          const sameDayItems = state.customPlans.filter(item => item.day === current.day).sort((a, b) => a.order - b.order);
+          const currentIndex = sameDayItems.findIndex(item => item.id === id);
+          const swapIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+          if (swapIndex >= 0 && swapIndex < sameDayItems.length) {
+            const swapItem = sameDayItems[swapIndex];
+            const temp = current.order;
+            current.order = swapItem.order;
+            swapItem.order = temp;
+            saveState();
+            renderPlan();
+          }
+        }
+      }
+      const deleteBtn = event.target.closest("[data-delete]");
+      if (deleteBtn) {
+        state.customPlans = state.customPlans.filter(item => item.id !== deleteBtn.dataset.delete);
+        saveState();
+        renderPlan();
+      }
+      const editBtn = event.target.closest("[data-edit]");
+      if (editBtn) {
+        const item = state.customPlans.find(item => item.id === editBtn.dataset.edit);
+        if (item) {
+          document.getElementById("custom-day").value = item.day;
+          document.getElementById("custom-time").value = item.time;
+          document.getElementById("custom-type").value = item.type;
+          document.getElementById("custom-drive").value = item.drive || "";
+          document.getElementById("custom-name").value = item.title;
+          document.getElementById("custom-note").value = item.desc;
+          document.getElementById("custom-map").value = item.map;
+          state.customPlans = state.customPlans.filter(p => p.id !== item.id);
+          saveState();
+          renderPlan();
+        }
+      }
+    });
+
+    document.getElementById("custom-plan-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const day = document.getElementById("custom-day").value;
+      const time = document.getElementById("custom-time").value;
+      const type = document.getElementById("custom-type").value;
+      const drive = document.getElementById("custom-drive").value;
+      const name = document.getElementById("custom-name").value.trim();
+      const desc = document.getElementById("custom-note").value.trim() || "臨時安排";
+      const map = document.getElementById("custom-map").value.trim() || name;
+      if (!name) return;
+      const order = Date.now();
+      state.customPlans.push({
+        id: `custom-${order}`,
+        day,
+        time,
+        type,
+        title: name,
+        desc,
+        drive,
+        map,
+        tags: [type],
+        default: false,
+        order
+      });
+      event.target.reset();
+      saveState();
+      renderPlan();
+    });
+
+    function renderChecklist() {
+      const container = document.getElementById("checklist");
+      container.innerHTML = "";
+      state.checklist.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between";
+        row.innerHTML = `
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" ${item.done ? "checked" : ""} data-check="${index}" />
+            <span class="${item.done ? "line-through text-gray-400" : ""}">${item.text}</span>
+          </label>
+          <button class="text-xs text-gray-400" data-remove="${index}">刪除</button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    document.getElementById("checklist").addEventListener("change", event => {
+      if (event.target.matches("[data-check]")) {
+        const index = Number(event.target.dataset.check);
+        state.checklist[index].done = event.target.checked;
+        saveState();
+        renderChecklist();
+      }
+    });
+
+    document.getElementById("checklist").addEventListener("click", event => {
+      if (event.target.matches("[data-remove]")) {
+        state.checklist.splice(Number(event.target.dataset.remove), 1);
+        saveState();
+        renderChecklist();
+      }
+    });
+
+    document.getElementById("checklist-add").addEventListener("click", () => {
+      const input = document.getElementById("checklist-input");
+      const text = input.value.trim();
+      if (!text) return;
+      state.checklist.push({ text, done: false });
+      input.value = "";
+      saveState();
+      renderChecklist();
+    });
+
+    function renderMemos() {
+      const container = document.getElementById("memo-list");
+      container.innerHTML = "";
+      const sorted = [...state.memos].sort((a, b) => b.pinned - a.pinned || b.time - a.time);
+      sorted.forEach(memo => {
+        const isUrl = /^(https?:\/\/)/.test(memo.text);
+        const card = document.createElement("div");
+        card.className = "card p-4 space-y-2";
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-gray-400">${new Date(memo.time).toLocaleString()}</span>
+            <button class="text-xs" data-pin="${memo.time}">${memo.pinned ? "取消置頂" : "置頂"}</button>
+          </div>
+          <p class="text-sm">${memo.text}</p>
+          ${isUrl ? `<a class="btn btn-outline text-xs" href="${memo.text}" target="_blank">開啟連結</a>` : ""}
+          <button class="text-xs text-red-400" data-delete="${memo.time}">刪除</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById("memo-add").addEventListener("click", () => {
+      const input = document.getElementById("memo-input");
+      const text = input.value.trim();
+      if (!text) return;
+      state.memos.push({ text, time: Date.now(), pinned: false });
+      input.value = "";
+      saveState();
+      renderMemos();
+    });
+
+    document.getElementById("memo-list").addEventListener("click", event => {
+      if (event.target.matches("[data-pin]")) {
+        const time = Number(event.target.dataset.pin);
+        const memo = state.memos.find(m => m.time === time);
+        if (memo) memo.pinned = !memo.pinned;
+        saveState();
+        renderMemos();
+      }
+      if (event.target.matches("[data-delete]")) {
+        const time = Number(event.target.dataset.delete);
+        state.memos = state.memos.filter(m => m.time !== time);
+        saveState();
+        renderMemos();
+      }
+    });
+
+    function renderExpenses() {
+      const list = document.getElementById("expense-list");
+      list.innerHTML = "";
+      let total = 0;
+      const categories = {};
+      state.expenses.forEach(item => {
+        total += item.amount;
+        categories[item.category] = (categories[item.category] || 0) + item.amount;
+        const card = document.createElement("div");
+        card.className = "card p-4 flex items-center gap-3";
+        card.innerHTML = `
+          ${item.photo ? `<img src="${item.photo}" class="w-12 h-12 rounded-lg object-cover" alt="photo" />` : `<div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-receipt text-gray-400"></i></div>`}
+          <div class="flex-1">
+            <p class="font-semibold">${item.name}</p>
+            <p class="text-xs text-gray-500">${item.category}｜${item.date}</p>
+          </div>
+          <div class="text-right">
+            <p class="font-semibold">TWD ${item.amount}</p>
+            <button class="text-xs text-red-400" data-expense-delete="${item.id}">刪除</button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+      const summary = document.getElementById("expense-summary");
+      const people = Number(document.getElementById("split-people")?.value || 1);
+      summary.innerHTML = `
+        <div class="text-sm text-gray-600">總計：TWD ${total}</div>
+        <div class="text-sm text-gray-600">人均：TWD ${people ? Math.round(total / people) : total}</div>
+        <div class="text-xs text-gray-500">${Object.entries(categories)
+          .map(([cat, amount]) => `${cat}：${amount}`)
+          .join("｜")}</div>
+        <div class="flex items-center gap-2 mt-2">
+          <input id="split-people" type="number" min="1" class="input" placeholder="輸入人數" value="${people}" />
+          <span class="text-xs text-gray-400">人數</span>
+        </div>
+      `;
+      summary.querySelector("#split-people").addEventListener("input", renderExpenses);
+    }
+
+    document.getElementById("expense-list").addEventListener("click", event => {
+      if (event.target.matches("[data-expense-delete]")) {
+        state.expenses = state.expenses.filter(item => item.id !== event.target.dataset.expenseDelete);
+        saveState();
+        renderExpenses();
+      }
+    });
+
+    document.getElementById("expense-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const name = document.getElementById("expense-name").value.trim();
+      const amount = Number(document.getElementById("expense-amount").value);
+      const category = document.getElementById("expense-category").value;
+      const fileInput = document.getElementById("expense-photo");
+      const date = new Date().toLocaleDateString();
+      const id = `exp-${Date.now()}`;
+      const addExpense = photo => {
+        state.expenses.push({ id, name, amount, category, date, photo });
+        event.target.reset();
+        saveState();
+        renderExpenses();
+      };
+      if (fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const max = 200;
+            const scale = Math.min(max / img.width, max / img.height, 1);
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            addExpense(canvas.toDataURL("image/jpeg", 0.7));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        addExpense("");
+      }
+    });
+
+    document.getElementById("calc-btn").addEventListener("click", () => {
+      const input = document.getElementById("calc-input").value;
+      try {
+        // eslint-disable-next-line no-new-func
+        const result = Function(`return (${input})`)();
+        document.getElementById("calc-result").textContent = `TWD ${result}`;
+      } catch {
+        document.getElementById("calc-result").textContent = "輸入格式錯誤";
+      }
+    });
+
+    document.getElementById("currency-convert").addEventListener("click", () => {
+      const rate = Number(document.getElementById("currency-rate").value || 0);
+      const amountText = document.getElementById("calc-result").textContent.replace(/[^0-9.]/g, "");
+      const amount = Number(amountText || 0);
+      const currency = document.getElementById("currency-main").value;
+      const converted = rate ? (amount * rate).toFixed(2) : 0;
+      document.getElementById("currency-output").textContent = `${currency} 換算：${converted}`;
+    });
+
+    function renderFood() {
+      const container = document.getElementById("food-list");
+      const filterCity = document.getElementById("food-filter-city").value;
+      const filterType = document.getElementById("food-filter-type").value;
+      const filterStatus = document.getElementById("food-filter-status").value;
+      const sort = document.getElementById("food-sort").value;
+      let items = [...state.food];
+      if (filterCity !== "all") items = items.filter(item => item.city.includes(filterCity));
+      if (filterType !== "all") items = items.filter(item => item.type === filterType);
+      if (filterStatus !== "all") items = items.filter(item => (filterStatus === "done" ? item.done : !item.done));
+      if (sort === "price") items.sort((a, b) => (a.price || "").localeCompare(b.price || ""));
+      if (sort === "city") items.sort((a, b) => (a.city || "").localeCompare(b.city || ""));
+      if (sort === "time") items.sort((a, b) => b.time - a.time);
+      container.innerHTML = "";
+      items.forEach(item => {
+        const mapQuery = item.map || `${item.name} ${item.city}`;
+        const card = document.createElement("div");
+        card.className = "card p-4 space-y-2";
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <h4 class="font-semibold">${item.name}</h4>
+            <span class="badge">${item.done ? "已吃" : "未吃"}</span>
+          </div>
+          <p class="text-xs text-gray-500">${item.city || ""}・${item.type}・${item.price || ""}</p>
+          <p class="text-sm text-gray-600">${item.note || ""}</p>
+          <div class="flex flex-wrap gap-2">
+            <a class="btn btn-outline text-xs" href="${createMapLink(mapQuery)}" target="_blank">開啟 Google Maps</a>
+            <button class="btn btn-outline text-xs" data-food-toggle="${item.id}">${item.done ? "標記未吃" : "標記已吃"}</button>
+            <button class="btn btn-outline text-xs" data-food-edit="${item.id}">編輯</button>
+            <button class="btn btn-outline text-xs" data-food-delete="${item.id}">刪除</button>
+          </div>
+          <div class="mt-2 flex items-center gap-2">
+            <select class="input" data-food-day="${item.id}">
+              <option value="Day1">Day1</option>
+              <option value="Day2">Day2</option>
+              <option value="Day3">Day3</option>
+              <option value="Day4">Day4</option>
+            </select>
+            <select class="input" data-food-slot="${item.id}">
+              <option value="早餐">早餐</option>
+              <option value="午餐">午餐</option>
+              <option value="晚餐">晚餐</option>
+              <option value="宵夜">宵夜</option>
+              <option value="彈性">彈性</option>
+            </select>
+            <button class="btn btn-primary text-xs" data-food-add="${item.id}">加入今天行程</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById("food-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const name = document.getElementById("food-name").value.trim();
+      if (!name) return;
+      state.food.push({
+        id: `food-${Date.now()}`,
+        name,
+        city: document.getElementById("food-city").value.trim(),
+        type: document.getElementById("food-type").value,
+        price: document.getElementById("food-price").value.trim(),
+        note: document.getElementById("food-note").value.trim(),
+        map: document.getElementById("food-map").value.trim(),
+        done: false,
+        time: Date.now()
+      });
+      event.target.reset();
+      saveState();
+      renderFood();
+    });
+
+    document.getElementById("food-list").addEventListener("click", event => {
+      if (event.target.matches("[data-food-toggle]")) {
+        const id = event.target.dataset.foodToggle;
+        const item = state.food.find(item => item.id === id);
+        if (item) item.done = !item.done;
+        saveState();
+        renderFood();
+      }
+      if (event.target.matches("[data-food-delete]")) {
+        state.food = state.food.filter(item => item.id !== event.target.dataset.foodDelete);
+        saveState();
+        renderFood();
+      }
+      if (event.target.matches("[data-food-edit]")) {
+        const id = event.target.dataset.foodEdit;
+        const item = state.food.find(item => item.id === id);
+        if (item) {
+          document.getElementById("food-name").value = item.name;
+          document.getElementById("food-city").value = item.city;
+          document.getElementById("food-type").value = item.type;
+          document.getElementById("food-price").value = item.price;
+          document.getElementById("food-note").value = item.note;
+          document.getElementById("food-map").value = item.map;
+          state.food = state.food.filter(i => i.id !== id);
+          saveState();
+          renderFood();
+        }
+      }
+      if (event.target.matches("[data-food-add]")) {
+        const id = event.target.dataset.foodAdd;
+        const item = state.food.find(item => item.id === id);
+        const day = document.querySelector(`[data-food-day="${id}"]`).value;
+        const slot = document.querySelector(`[data-food-slot="${id}"]`).value;
+        if (item) {
+          const order = Date.now();
+          state.customPlans.push({
+            id: `food-${order}`,
+            day,
+            time: slot,
+            type: "餐廳",
+            title: item.name,
+            desc: item.note || "美食清單加入",
+            drive: "",
+            map: item.map || `${item.name} ${item.city}`,
+            tags: ["美食"],
+            default: false,
+            order
+          });
+          saveState();
+          renderPlan();
+        }
+      }
+    });
+
+    document.querySelectorAll("#food-filter-city, #food-filter-type, #food-filter-status, #food-sort").forEach(select => {
+      select.addEventListener("change", renderFood);
+    });
+
+    function initTabs() {
+      const tabs = document.querySelectorAll("nav .nav-item");
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          const target = tab.dataset.tab;
+          document.querySelectorAll(".tab-section").forEach(section => section.classList.add("hidden"));
+          document.getElementById(`tab-${target}`).classList.remove("hidden");
+          tabs.forEach(btn => btn.classList.remove("tab-active"));
+          tab.classList.add("tab-active");
+        });
+      });
+    }
+
+    renderPlan();
+    renderChecklist();
+    renderMemos();
+    renderExpenses();
+    renderFood();
+    initTabs();
+
+    document.querySelectorAll("[data-choice]").forEach(btn => {
+      if (btn.dataset.choice === state.planChoice) btn.classList.add("btn-primary");
+    });
+  </script>
+</body>
+</html>
